@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://*.google.com; base-uri 'none'; form-action 'none'; object-src 'none'"><meta name="referrer" content="no-referrer"><title>Moon Light Café</title>
+<html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com https://apis.google.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://*.google.com; base-uri 'none'; form-action 'none'; object-src 'none'"><meta name="referrer" content="origin"><meta name="robots" content="noindex,nofollow"><style id="fb">html{display:none}</style><script>if(self===top){document.getElementById("fb").remove()}else{top.location=self.location}</script><title>Moonhouse Café</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Dancing+Script:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -45,6 +45,8 @@ input,select{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border
 @keyframes fu{from{opacity:0;transform:translateY(18px)}}@keyframes pop{from{opacity:0;transform:scale(.4)}}@keyframes bump{50%{transform:scale(1.5)}}@keyframes float{50%{transform:translateY(-10px)}}@keyframes sway{50%{transform:rotate(12deg)}}
 @keyframes tw{from{opacity:.25}to{opacity:1}}@keyframes glowm{0%,100%{box-shadow:0 0 30px 6px rgba(247,217,138,.35)}50%{box-shadow:0 0 56px 16px rgba(247,217,138,.6)}}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(58,165,122,.6)}100%{box-shadow:0 0 0 14px transparent}}@keyframes ring{from{stroke-dashoffset:339.3}}@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.2}}
+.ld{position:fixed;inset:0;z-index:300;display:none;place-items:center;background:rgba(10,13,40,.78);backdrop-filter:blur(5px)}.ld.on{display:grid;animation:fu .3s both}.lm{text-align:center;color:#fff}.lm p{margin:20px 0 0;font:600 15px Inter,sans-serif;letter-spacing:.03em}.orb{position:relative;width:96px;height:96px;margin:auto}.orb b{position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fffbe6,#f7d98a 55%,#dca94a);animation:glowm 1.6s ease-in-out infinite}.orb i{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:var(--au);animation:spinr 1s linear infinite}.orb i:after{content:'';position:absolute;top:-7px;left:50%;margin-left:-6px;width:10px;height:10px;border-radius:50%;background:var(--au);box-shadow:0 0 12px 3px var(--au)}@keyframes spinr{to{transform:rotate(360deg)}}
+.anim .card,.anim .stat{animation:fu .45s both}.anim .stat:nth-child(2){animation-delay:.07s}.anim .stat:nth-child(3){animation-delay:.14s}.anim .card:nth-of-type(2){animation-delay:.06s}.anim .card:nth-of-type(3){animation-delay:.12s}.anim .card:nth-of-type(n+4){animation-delay:.18s}.card{transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(22,26,69,.12)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body><div id="app"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -55,16 +57,16 @@ const firebaseConfig={apiKey:"AIzaSyAfbMuiuQwxCFA5gkikUtrubiTQNxDeaBo",authDomai
 const V="10.12.2";
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getFirestore,collection,doc,onSnapshot,addDoc,setDoc,updateDoc,deleteDoc,getDoc,query,orderBy,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-const db=getFirestore(initializeApp(firebaseConfig)),auth=getAuth();
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,setPersistence,browserSessionPersistence} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const db=getFirestore(initializeApp(firebaseConfig)),auth=getAuth();setPersistence(auth,browserSessionPersistence).catch(()=>{});
 const ST=['Placed','Preparing','Ready','Served'],IC=['📝','👨‍🍳','🛎️','✅'];
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let S={cafe:'Moon Light',offers:[],loy:{on:true,n:6,label:'Coffee'}},menu=[],orders=[],members=[],wins=[],ofil='pending',otoday=false,tab='dash',msg='',ready=false,keep={};
-const cfgRef=doc(db,'settings','config');
+let S={cafe:'Moonhouse',offers:[],loy:{on:true,n:6,label:'Coffee'}},menu=[],orders=[],members=[],wins=[],ofil='pending',otoday=false,tab='dash',msg='',ready=false,keep={};
+const cfgRef=doc(db,'settings','config');let animNext=true;
 /* Orders are written by customers, so treat every field as untrusted: coerce types/lengths before rendering (stops stored XSS and broken-data crashes). */
 const cleanO=o=>({...o,uid:String(o.uid??''),no:String(o.no??'').replace(/\D/g,'').slice(0,8),table:String(o.table??'').slice(0,10),name:String(o.name??'').slice(0,60),phone:String(o.phone??'').replace(/\D/g,'').slice(0,10),total:Number(o.total)||0,st:Math.min(3,Math.max(0,Math.floor(+o.st)||0)),items:(Array.isArray(o.items)?o.items:[]).slice(0,20).map(i=>({id:String(i?.id??''),n:String(i?.n??'').slice(0,60),q:Math.min(99,Math.max(0,Math.floor(+i?.q)||0)),p:Number(i?.p)||0,free:!!i?.free}))});
 const hdr=r=>`<div class="top"><div><div class="logo"><span>🌙</span> ${esc(S.cafe)}<small>ADMIN DASHBOARD</small></div>${r}</div></div>`;
-function render(){const root=$('#app');if(!ready){root.innerHTML=hdr('')+`<div class="w"><div class="card"><h2>Admin login</h2><p class="mu">${esc(msg)||'Sign in with the email and password you created in Firebase Authentication.'}</p><input id="em" type="email" placeholder="Email"><input id="pw" type="password" placeholder="Password"><button onclick="login()">Sign in</button></div></div>`;return}
+function render(){document.body.classList.toggle('anim',animNext);animNext=false;const root=$('#app');if(!ready){root.innerHTML=hdr('')+`<div class="w"><div class="card"><h2>Admin login</h2><p class="mu">${esc(msg)||'Sign in with the email and password you created in Firebase Authentication.'}</p><input id="em" type="email" autocomplete="username" placeholder="Email"><input id="pw" type="password" autocomplete="current-password" placeholder="Password"><button onclick="login()">Sign in</button></div></div>`;return}
  const tabs=[['dash','📊 Dashboard'],['orders','📋 Orders'],['menu','🍽️ Menu'],['offers','🏷️ Offers'],['loyalty','🎁 Loyalty'],['wheel','🎡 Wheel'],['qr','🔳 Table QRs']];let b='';
  if(tab=='dash'){const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN'),sum=L=>L.reduce((s,o)=>s+(o.total||0),0),dt=o=>o.t?.toDate?o.t.toDate():new Date(),
   d0=new Date();d0.setHours(0,0,0,0);const w0=new Date(d0);w0.setDate(w0.getDate()-6);const m0=new Date(d0.getFullYear(),d0.getMonth(),1),
@@ -87,8 +89,8 @@ function render(){const root=$('#app');if(!ready){root.innerHTML=hdr('')+`<div c
  if(tab=='offers')b=(S.offers||[]).map((o,i)=>`<div class="card row"><span>${esc(o)}</span><button class="g s" onclick="delO(${i})">✕</button></div>`).join('')+`<div class="card"><h3>New offer banner</h3><input id="of" placeholder="e.g. 20% off all desserts today!"><button onclick="addO()">Publish offer</button></div>`;
  if(tab=='loyalty')b=`<div class="card"><label class="row"><h3>Loyalty program</h3><input type="checkbox" style="width:auto" ${S.loy.on?'checked':''} onchange="saveL(this.checked)"></label><p class="mu">After N eligible items, the customer unlocks a gift box and spins the prize wheel (set prizes in the Wheel tab). Tick “loyalty” per item in Menu.</p><label class="mu">Buy this many (N)</label><input id="ln" type="number" min="1" value="${S.loy.n}"><label class="mu">Reward label</label><input id="ll" value="${esc(S.loy.label)}"><button onclick="saveL()">Save loyalty settings</button></div><div class="card"><h3>Members</h3>${members.map(c=>`<div class="row mu" style="margin:6px 0"><span>${esc(c.name||'')} · ${esc(c.phone||c.id)}</span><span>${(c.paid||0)}/${S.loy.n} · 🎁 ${c.rewards||0}</span></div>`).join('')||'<span class="mu">None yet</span>'}</div>`;
  if(tab=='wheel'){const W=S.wheel||[];b=`<div class="card"><h3>Wheel prizes</h3><p class="mu">Customers who complete ${S.loy.n} loyalty items open a gift and spin. Every slice has an equal chance; add a prize twice to make it more likely, or add “Try Again” for a no-win slice. Minimum 2 prizes.</p>${W.map((w,i)=>`<div class="row" style="margin:8px 0"><span>${esc(w)}</span><button class="g s" onclick="delW(${i})">✕</button></div>`).join('')||'<span class="mu">No prizes yet.</span>'}${W.length<2?`<button class="g" onclick="seedW()" style="margin:8px 0">Load sample prizes</button>`:''}<input id="wp" placeholder="e.g. Free Cappuccino" maxlength="20"><button onclick="addW()">Add prize</button></div><div class="card"><h3>Winners</h3>${wins.map(w=>`<div class="row" style="margin:8px 0"><span><b>${esc(w.prize)}</b><br><span class="mu">${esc(w.name)} · ${esc(w.phone)}</span></span>${w.status=='claimed'?'<span class="tag">Claimed</span>':`<button class="s" onclick="claim('${w.id}')">Mark claimed</button>`}</div>`).join('')||'<span class="mu">No spins yet.</span>'}</div>`}
- if(tab=='qr')b=`<div class="card"><label class="mu">Cafe name</label><input value="${esc(S.cafe)}" onchange="setDoc(cfgRef,{cafe:this.value},{merge:true})"><label class="mu">Number of tables</label><input id="tn" type="number" value="6" min="1" max="50"><button onclick="qrs()">Generate QR codes</button><div id="qrs"></div></div>`;
- root.innerHTML=hdr(`<button class="s au" onclick="signOut(auth)">Sign out</button>`)+`<div class="w"><h2 style="margin:16px 0 0">Dashboard</h2><div class="tabs">${tabs.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="setTab('${t[0]}')">${t[1]}</button>`).join('')}</div>${b}</div>`}
+ if(tab=='qr')b=`<div class="card"><label class="mu">Cafe name</label><input value="${esc(S.cafe)}" onchange="setCafe(this.value)"><label class="mu">Number of tables</label><input id="tn" type="number" value="6" min="1" max="50"><button onclick="qrs()">Generate QR codes</button><div id="qrs"></div></div>`;
+ root.innerHTML=hdr(`<button class="s au" onclick="adminLogout()">Sign out</button>`)+`<div class="w"><h2 style="margin:16px 0 0">Dashboard</h2><div class="tabs">${tabs.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="setTab('${t[0]}')">${t[1]}</button>`).join('')}</div>${b}</div>`}
 
 /* ----- PDF invoice (works in both admin & customer) ----- */
 let curList=[];
@@ -111,7 +113,7 @@ async function makePDF(list,fname){if(!list.length)return alert('No orders to do
  try{if(document.fonts?.ready)await document.fonts.ready;const c=await html2canvas(host,{scale:2,backgroundColor:'#ffffff',useCORS:true}),pdf=new window.jspdf.jsPDF('p','pt','a4'),pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight(),pch=Math.floor(c.width*ph/pw);
   for(let off=0,p=0;off<c.height;off+=pch,p++){const s=document.createElement('canvas');s.width=c.width;s.height=Math.min(pch,c.height-off);const x=s.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,s.width,s.height);x.drawImage(c,0,off,c.width,s.height,0,0,c.width,s.height);if(p)pdf.addPage();pdf.addImage(s.toDataURL('image/jpeg',.95),'JPEG',0,0,pw,s.height*pw/c.width)}
   pdf.save(fname)}catch(e){alert('Could not create PDF: '+e.message)}finally{host.remove()}}
-const dlInv=id=>{const o=orders.find(x=>x.id==id);if(o)makePDF([o],'Invoice-'+o.no+'.pdf')},
+const dlInv=id=>{const o=orders.find(x=>x.id==id);if(o)return makePDF([o],'Invoice-'+o.no+'.pdf')},
  dlAll=()=>makePDF(curList,'Orders-'+new Date().toISOString().slice(0,10)+'.pdf');
 function start(){
  onSnapshot(query(collection(db,'orders'),orderBy('t','desc')),s=>{orders=s.docs.map(d=>cleanO({id:d.id,...d.data()}));render()});
@@ -120,12 +122,12 @@ function start(){
  onSnapshot(collection(db,'customers'),s=>{members=s.docs.map(d=>({id:d.id,...d.data()}));render()});
  onSnapshot(cfgRef,s=>{if(s.exists())S={...S,...s.data()};render()})}
 onAuthStateChanged(auth,async u=>{if(!u||u.isAnonymous){ready=false;return render()}
- const a=await getDoc(doc(db,'admins',u.uid));if(!a.exists()){msg='This account is not an admin. Add a document admins/'+u.uid+' in Firestore.';ready=false;return render()}
- if(!keep.on){keep.on=1;start()}ready=true;render()});
-Object.assign(window,{db,auth,cfgRef,setDoc,signOut,render,dlInv,dlAll,
- setTab(v){tab=v;render()},setOF(v){ofil=v;render()},togToday(){otoday=!otoday;render()},
- async login(){try{await signInWithEmailAndPassword(auth,$('#em').value,$('#pw').value)}catch(e){msg=e.message;render()}},
- addW(){const v=$('#wp').value.trim();if(v)setDoc(cfgRef,{wheel:[...(S.wheel||[]),v]},{merge:true})},
+ const a=await getDoc(doc(db,'admins',u.uid));if(!a.exists()){msg='This account does not have admin access.';ready=false;return render()}
+ if(!keep.on){keep.on=1;start()}ready=true;animNext=true;idleReset();render()});
+Object.assign(window,{render,dlInv,dlAll,adminLogout(){return signOut(auth)},setCafe(v){v=String(v).trim().slice(0,40);if(v)return setDoc(cfgRef,{cafe:v},{merge:true})},
+ setTab(v){tab=v;animNext=true;render()},setOF(v){ofil=v;render()},togToday(){otoday=!otoday;render()},
+ async login(){try{await signInWithEmailAndPassword(auth,$('#em').value,$('#pw').value)}catch(e){msg=e.code=='auth/too-many-requests'?'Too many attempts. Please wait a few minutes and try again.':'Sign-in failed. Check your email and password.';render()}},
+ addW(){const v=$('#wp').value.trim().slice(0,20);if(v)return setDoc(cfgRef,{wheel:[...(S.wheel||[]),v]},{merge:true})},
  delW:i=>setDoc(cfgRef,{wheel:S.wheel.filter((_,k)=>k!=i)},{merge:true}),
  seedW:()=>setDoc(cfgRef,{wheel:['Free Cappuccino','Free Brownie','10% Off','Free Cookie','Free Masala Chai','Try Again']},{merge:true}),
  claim:id=>updateDoc(doc(db,'wins',id),{status:'claimed'}),
@@ -134,18 +136,35 @@ Object.assign(window,{db,auth,cfgRef,setDoc,signOut,render,dlInv,dlAll,
    const find=i=>menu.find(x=>x.id==i.id)||menu.find(x=>x.n==i.n),exp=o.items.reduce((t,i)=>{const m=find(i);return t+(m?i.q*m.p:NaN)},0);
    if(!confirm((exp!==o.total?'WARNING: order total is Rs '+o.total+' but the current menu says '+(isNaN(exp)?'(an item is not on the menu)':'Rs '+exp)+'.\n\n':'')+'Mark this order as Served? It cannot be changed afterwards.'))return;
    /* Loyalty stamps are awarded here, by staff, when the order is served - customers cannot write their own stamps. */
-   const b=writeBatch(db),L=S.loy,cr=doc(db,'customers',o.uid);b.update(doc(db,'orders',id),{st:3});
-   if(L.on&&L.n>0&&o.uid){const cs=await getDoc(cr);if(cs.exists()){let p=cs.data().paid||0,r=cs.data().rewards||0;o.items.forEach(i=>{const m=find(i);if(m?.loy){p+=i.q;while(p>=L.n){p-=L.n;r++}}});b.update(cr,{paid:p,rewards:r})}}
-   await b.commit()}catch(e){alert(e.message)}},
+   const ordRef=doc(db,'orders',id),L=S.loy,cr=o.uid?doc(db,'customers',o.uid):null;let upd=null;
+   if(L.on&&L.n>0&&cr){const cs=await getDoc(cr);if(cs.exists()){let p=Number(cs.data().paid)||0,r=Number(cs.data().rewards)||0;o.items.forEach(i=>{const m=find(i);if(m?.loy){p+=i.q;while(p>=L.n){p-=L.n;r++}}});upd={paid:p,rewards:r}}}
+   try{const b=writeBatch(db);b.update(ordRef,{st:3});if(upd)b.update(cr,upd);await b.commit()}
+   catch(e1){/* atomic save refused: serve the order on its own, then try the stamps separately so the cause is clear */
+    await updateDoc(ordRef,{st:3});
+    if(upd){try{await updateDoc(cr,upd)}catch(e2){alert('Order marked Served, but the loyalty stamps could not be saved ('+e2.message+'). Check that your Firestore rules let staff update customers (paid, rewards).')}}}
+  }catch(e){alert(e.message)}},
  tg:(id,v)=>updateDoc(doc(db,'menu',id),{loy:v?1:0}),
  delM:id=>deleteDoc(doc(db,'menu',id)),
- addM(){const n=$('#mn').value.trim(),p=+$('#mp').value;if(!n||!p)return;addDoc(collection(db,'menu'),{n,p,e:$('#me').value||'🍽️',c:$('#mc').value||'Food',loy:0})},
- addO(){const v=$('#of').value.trim();if(v)setDoc(cfgRef,{offers:[...(S.offers||[]),v]},{merge:true})},
+ addM(){const n=$('#mn').value.trim().slice(0,60),p=Math.round(+$('#mp').value*100)/100;if(!n||!(p>0)||p>100000)return;return addDoc(collection(db,'menu'),{n,p,e:($('#me').value||'🍽️').slice(0,8),c:($('#mc').value||'Food').trim().slice(0,30),loy:0})},
+ addO(){const v=$('#of').value.trim().slice(0,120);if(v)return setDoc(cfgRef,{offers:[...(S.offers||[]),v]},{merge:true})},
  delO:i=>setDoc(cfgRef,{offers:S.offers.filter((_,k)=>k!=i)},{merge:true}),
- saveL(on){const n=Math.max(1,+($('#ln')?.value)||S.loy.n),label=$('#ll')?.value||S.loy.label;setDoc(cfgRef,{loy:{on:on??S.loy.on,n,label}},{merge:true})},
- async seed(){const b=writeBatch(db);b.set(cfgRef,{cafe:'Moon Light',offers:['🌙 Night Owl: 15% off after 8 PM','⭐ Free cookie with any coffee, 4–6 PM'],loy:{on:true,n:6,label:'Coffee'},wheel:['Free Cappuccino','Free Brownie','10% Off','Free Cookie','Free Masala Chai','Try Again']},{merge:true});
+ saveL(on){const n=Math.min(50,Math.max(1,Math.floor(+($('#ln')?.value)||S.loy.n))),label=String($('#ll')?.value||S.loy.label).slice(0,20);return setDoc(cfgRef,{loy:{on:on??S.loy.on,n,label}},{merge:true})},
+ async seed(){const b=writeBatch(db);b.set(cfgRef,{cafe:'Moonhouse',offers:['🌙 Night Owl: 15% off after 8 PM','⭐ Free cookie with any coffee, 4–6 PM'],loy:{on:true,n:6,label:'Coffee'},wheel:['Free Cappuccino','Free Brownie','10% Off','Free Cookie','Free Masala Chai','Try Again']},{merge:true});
   [['Cappuccino',120,'☕','Coffee',1],['Iced Latte',150,'🧋','Cold Drinks',1],['Cold Coffee',140,'🥤','Cold Drinks',1],['Masala Chai',60,'🍵','Non-Coffee',0],['Veg Sandwich',110,'🥪','Food',0],['Choco Brownie',90,'🍰','Food',0]].forEach(([n,p,e,c,loy])=>b.set(doc(collection(db,'menu')),{n,p,e,c,loy}));await b.commit()},
- qrs(){const n=+$('#tn').value||6,box=$('#qrs');box.innerHTML='';const base=location.href.split('?')[0].replace(/admin\.html$/,'customer.html');
+ qrs(){const n=Math.min(50,Math.max(1,Math.floor(+$('#tn').value)||6)),box=$('#qrs');box.innerHTML='';const base=location.href.split('?')[0].replace(/admin\.html$/,'customer.html');
   for(let i=1;i<=n;i++){const d=document.createElement('div');d.className='qr';const q=document.createElement('div');d.appendChild(q);d.append('Table '+i);box.appendChild(d);new QRCode(q,{text:base+'?table='+i,width:110,height:110})}}});
+/* ----- security: sign the admin out after 30 minutes without activity ----- */
+let idleT;function idleReset(){clearTimeout(idleT);if(ready)idleT=setTimeout(()=>{msg='Signed out after 30 minutes of inactivity.';signOut(auth)},30*60*1000)}
+['click','keydown','touchstart','mousemove'].forEach(e=>addEventListener(e,idleReset,{passive:true}));
+/* ----- loading overlay for login and every save/update/PDF task ----- */
+let ldN=0;
+function loading(on,msg){let el=$('#ld');if(!el){el=document.createElement('div');el.id='ld';el.className='ld';el.innerHTML='<div class="lm"><div class="orb"><i></i><b></b></div><p id="ldm"></p></div>';document.body.appendChild(el)}
+ if(on){ldN++;$('#ldm').textContent=msg||'Loading…'}else ldN=Math.max(0,ldN-1);el.classList.toggle('on',ldN>0)}
+['login:Signing you in…','setSt:Updating order…','tg:Saving…','delM:Removing item…','addM:Adding item…','addO:Publishing offer…','delO:Removing offer…','saveL:Saving loyalty settings…','seed:Loading sample data…','addW:Adding prize…','delW:Removing prize…','seedW:Loading sample prizes…','claim:Marking as claimed…','dlInv:Creating invoice…','dlAll:Creating PDF…'].forEach(x=>{
+ const [k,m]=x.split(':'),f=window[k];if(typeof f!='function')return;
+ window[k]=async function(...a){let sh=false,t;const show=()=>{sh=true;loading(1,m)};if(k=='login'){msg='';show()}else t=setTimeout(show,150);
+  try{await Promise.race([Promise.resolve(f.apply(this,a)),new Promise(r=>setTimeout(r,20000))]);
+   if(k=='login'){const s0=Date.now();while(!ready&&!msg&&Date.now()-s0<10000)await new Promise(r=>setTimeout(r,100))}}
+  finally{clearTimeout(t);if(sh)loading(0)}}});
 render();
 </script></body></html>
